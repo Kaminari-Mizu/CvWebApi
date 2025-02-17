@@ -1,4 +1,4 @@
-﻿namespace CvWebApi.Models
+﻿namespace Context
 {
     public class CardModelDTO
     {

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
-namespace CvWebApi.Models
+namespace Context
 {
     // Base class for shared properties
     public abstract class HomeModel

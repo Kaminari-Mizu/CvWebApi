@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using CvWebApi.Models;
+using Context;
 
 namespace CvWebApi.CoreLogic
 {
@@ -7,19 +8,23 @@ namespace CvWebApi.CoreLogic
     {
         public MappingProfile()
         {
-            // Map from CardModel to CardModelDTO
+            // CardModel ↔ CardModelDTO
             CreateMap<CardModel, CardModelDTO>()
-                .ForMember(dest => dest.Badges, opt => opt.MapFrom(src => src.Badges));
+                .ForMember(dest => dest.Badges, opt => opt.MapFrom(src => src.Badges))
+                .ReverseMap(); // 🔹 Enables reverse mapping from DTO to Entity
 
-            // Map from BadgeModel to BadgeModelDTO
-            CreateMap<BadgeModel, BadgeModelDTO>();
+            // BadgeModel ↔ BadgeModelDTO
+            CreateMap<BadgeModel, BadgeModelDTO>()
+                .ReverseMap();
 
-            // Map from CarouselModel to CarouselModelDTO
+            // CarouselModel ↔ CarouselModelDTO
             CreateMap<CarouselModel, CarouselModelDTO>()
-                .ForMember(dest => dest.Images, opt => opt.MapFrom(src => src.Images));
+                .ForMember(dest => dest.Images, opt => opt.MapFrom(src => src.Images))
+                .ReverseMap(); // 🔹 Enables reverse mapping from DTO to Entity
 
-            // Map from CarouselImageModel to CarouselImageDTO
-            CreateMap<CarouselImageModel, CarouselImageDTO>();
+            // CarouselImageModel ↔ CarouselImageDTO
+            CreateMap<CarouselImageModel, CarouselImageDTO>()
+                .ReverseMap();
         }
     }
 }

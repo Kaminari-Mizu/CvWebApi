@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace CvWebApi.Models
+namespace Context
 {
     public class CvWebContext : DbContext
     {

@@ -1,19 +1,34 @@
 using Microsoft.EntityFrameworkCore;
-using CvWebApi.Models;
-using CvWebApi.CoreLogic; // Ensure you include the namespace for your AutoMapper Profile
+using CvWebApi.CoreLogic;
+using AutoMapper;
+using Microsoft.Extensions.Options;
+using Integration;
+using Services;
+using Context;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
+// Add services to the container
 builder.Services.AddControllers();
+
+builder.Services.AddScoped<ICardRepository, CardRepository>();
+builder.Services.AddScoped<ICardService, CardService>();
 
 // Register AutoMapper
 builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
 
-// Register your DbContext with a database connection
+// Register DbContext
 builder.Services.AddDbContext<CvWebContext>(opt =>
-    opt.UseInMemoryDatabase("CvDatabase"));
+       opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
+);
+
+
+
+// Register Services & Repositories for Dependency Injection
+builder.Services.AddScoped<ICardRepository, CardRepository>();
+builder.Services.AddScoped<ICardService, CardService>();
+builder.Services.AddScoped<ICarouselRepository, CarouselRepository>();
+builder.Services.AddScoped<ICarouselService, CarouselService>();
 
 // Configure CORS
 builder.Services.AddCors(options =>
@@ -26,7 +41,7 @@ builder.Services.AddCors(options =>
     });
 });
 
-// Add Swagger/OpenAPI for API documentation
+// Add Swagger/OpenAPI
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -35,7 +50,7 @@ var app = builder.Build();
 // Use CORS policy
 app.UseCors("AllowReactApp");
 
-// Configure the HTTP request pipeline.
+// Configure the HTTP request pipeline
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -43,9 +58,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();
