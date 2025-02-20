@@ -12,7 +12,7 @@
 
     public class BadgeModelDTO
     {
-        public int Id { get; set; }
+       public int Id { get; set; }
         public string Emoji { get; set; }
         public string Label { get; set; }
     }
@@ -27,6 +27,6 @@
     public class CarouselImageDTO
     {
         public int Id { get; set; }
-        public string ImageUrl { get; set; }
+        public List<string> ImageUrl { get; set; }
     }
 }

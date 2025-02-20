@@ -9,8 +9,9 @@ namespace Context
     public abstract class HomeModel
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        public string Title { get; set; }
+        public string Title { get; set; } = null!;
     }
 
     // Table 1: Card Model (inherits from HomeModel)
@@ -35,7 +36,7 @@ namespace Context
     {
         [Key]
         public int Id { get; set; }
-        public string ImageUrl { get; set; }
+        public List<string> ImageUrl { get; set; } = new List<string>();
 
         // Foreign key to CarouselModel
         public int CarouselModelId { get; set; }

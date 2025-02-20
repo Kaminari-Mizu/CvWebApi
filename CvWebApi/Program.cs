@@ -37,6 +37,7 @@ builder.Services.AddCors(options =>
     {
         policy.WithOrigins("[YOUR_REACT_PAGE_URL]")
             .AllowAnyHeader()
+            .AllowAnyOrigin()
             .AllowAnyMethod();
     });
 });

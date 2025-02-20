@@ -11,6 +11,7 @@ namespace CvWebApi.CoreLogic
             // CardModel ↔ CardModelDTO
             CreateMap<CardModel, CardModelDTO>()
                 .ForMember(dest => dest.Badges, opt => opt.MapFrom(src => src.Badges))
+                .ForMember(dest => dest.Id, opt => opt.Ignore()) // Ignore Id for updates
                 .ReverseMap(); // 🔹 Enables reverse mapping from DTO to Entity
 
             // BadgeModel ↔ BadgeModelDTO

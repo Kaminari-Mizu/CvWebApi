@@ -4,6 +4,10 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Services;
 using Context;
+using AutoMapper;
+using Microsoft.AspNetCore.JsonPatch;
+
+
 
 namespace CvWebApi.Controllers
 {
@@ -13,11 +17,15 @@ namespace CvWebApi.Controllers
     {
         private readonly ICardService _cardService;
         private readonly ICarouselService _carouselService;
+        private readonly IMapper _mapper;  // Add this line to inject IMapper
 
-        public HomeController(ICardService cardService, ICarouselService carouselService)
+
+
+        public HomeController(ICardService cardService, ICarouselService carouselService, IMapper mapper)
         {
             _cardService = cardService;
             _carouselService = carouselService;
+            _mapper = mapper;
         }
 
         // Get all Cards
@@ -29,7 +37,20 @@ namespace CvWebApi.Controllers
                 var cards = await _cardService.GetCardsAsync();
                 return Ok(cards);
             }
-            catch (Exception ex) { return StatusCode(500, $"Error when fetching data {ex.Message}"); }
+            catch (Exception ex) { return StatusCode(500, $"Error when fetching data: {ex.Message}"); }
+        }
+
+        // Get a Card by ID
+        [HttpGet("cards/{id}")]
+        public async Task<ActionResult<CardModelDTO>> GetCardById(int id)
+        {
+            try
+            {
+                var card = await _cardService.GetCardByIdAsync(id);
+                if (card == null) return NotFound($"Card with ID {id} not found.");
+                return Ok(card);
+            }
+            catch (Exception ex) { return StatusCode(500, $"Error when fetching data: {ex.Message}"); }
         }
 
         // Create a new Card
@@ -39,9 +60,48 @@ namespace CvWebApi.Controllers
             try
             {
                 var createdCard = await _cardService.CreateCardAsync(cardDTO);
-                return CreatedAtAction(nameof(GetCards), new { id = createdCard.Id }, createdCard);
+                return CreatedAtAction(nameof(GetCardById), new { id = createdCard.Id }, createdCard);
             }
-            catch (Exception ex) { return StatusCode(400, $"Input incorrect/Mismatched Parameters/Invalid data type {ex.Message}"); }
+            catch (Exception ex) { return StatusCode(400, $"Input incorrect/Mismatched Parameters/Invalid data type: {ex.Message}"); }
+        }
+
+        // Update an existing Card
+        [HttpPut("cards/{id}")]
+        public async Task<IActionResult> UpdateCard(int id, CardModelDTO cardDTO)
+        {
+            try
+            {
+                var updatedCard = await _cardService.UpdateCardAsync(id, cardDTO);
+                if (updatedCard == null) return NotFound($"Card with ID {id} not found.");
+                return Ok(updatedCard);
+            }
+            catch (Exception ex) { return StatusCode(500, $"Error when updating data: {ex.Message}"); }
+        }
+
+        [HttpPatch("cards/PatchCard")]
+        public async Task<IActionResult> PatchCard(int id, [FromBody] JsonPatchDocument<CardModelDTO> cardDTO)
+        { 
+
+            var updatedCard = await _cardService.PatchCardAsync(id, cardDTO);
+            if (updatedCard == null)
+                return NotFound($"Card with ID {id} not found.");
+
+            return Ok(updatedCard);
+        }
+
+
+
+        // Delete a Card
+        [HttpDelete("cards/{id}")]
+        public async Task<IActionResult> DeleteCard(int id)
+        {
+            try
+            {
+                var success = await _cardService.DeleteCardAsync(id);
+                if (!success) return NotFound($"Card with ID {id} not found.");
+                return NoContent();
+            }
+            catch (Exception ex) { return StatusCode(500, $"Error when deleting data: {ex.Message}"); }
         }
 
         // Get all Carousels
@@ -53,7 +113,20 @@ namespace CvWebApi.Controllers
                 var carousels = await _carouselService.GetCarouselsAsync();
                 return Ok(carousels);
             }
-            catch (Exception ex) { return StatusCode(500, $"Error when fetching data {ex.Message}"); }
+            catch (Exception ex) { return StatusCode(500, $"Error when fetching data: {ex.Message}"); }
+        }
+
+        // Get a Carousel by ID
+        [HttpGet("carousel/{id}")]
+        public async Task<ActionResult<CarouselModelDTO>> GetCarouselById(int id)
+        {
+            try
+            {
+                var carousel = await _carouselService.GetCarouselByIdAsync(id);
+                if (carousel == null) return NotFound($"Carousel with ID {id} not found.");
+                return Ok(carousel);
+            }
+            catch (Exception ex) { return StatusCode(500, $"Error when fetching data: {ex.Message}"); }
         }
 
         // Create a new Carousel
@@ -63,9 +136,35 @@ namespace CvWebApi.Controllers
             try
             {
                 var createdCarousel = await _carouselService.CreateCarouselAsync(carouselDTO);
-                return CreatedAtAction(nameof(GetCarousels), new { id = createdCarousel.Id }, createdCarousel);
+                return CreatedAtAction(nameof(GetCarouselById), new { id = createdCarousel.Id }, createdCarousel);
             }
-            catch (Exception ex) { return StatusCode(400, $"Input incorrect/Mismatched Parameters/Invalid data type {ex.Message}"); }
+            catch (Exception ex) { return StatusCode(400, $"Input incorrect/Mismatched Parameters/Invalid data type: {ex.Message}"); }
+        }
+
+        // Update an existing Carousel
+        [HttpPut("carousel/{id}")]
+        public async Task<IActionResult> UpdateCarousel(int id, CarouselModelDTO carouselDTO)
+        {
+            try
+            {
+                var updatedCarousel = await _carouselService.UpdateCarouselAsync(id, carouselDTO);
+                if (updatedCarousel == null) return NotFound($"Carousel with ID {id} not found.");
+                return Ok(updatedCarousel);
+            }
+            catch (Exception ex) { return StatusCode(500, $"Error when updating data: {ex.Message}"); }
+        }
+
+        // Delete a Carousel
+        [HttpDelete("carousel/{id}")]
+        public async Task<IActionResult> DeleteCarousel(int id)
+        {
+            try
+            {
+                var success = await _carouselService.DeleteCarouselAsync(id);
+                if (!success) return NotFound($"Carousel with ID {id} not found.");
+                return NoContent();
+            }
+            catch (Exception ex) { return StatusCode(500, $"Error when deleting data: {ex.Message}"); }
         }
     }
 }

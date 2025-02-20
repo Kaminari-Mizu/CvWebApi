@@ -9,5 +9,9 @@ namespace Services
     {
         Task<IEnumerable<CarouselModelDTO>> GetCarouselsAsync();
         Task<CarouselModelDTO> CreateCarouselAsync(CarouselModelDTO carouselDTO);
+        Task<CarouselModelDTO?> GetCarouselByIdAsync(int id);
+        Task<CarouselModelDTO?> UpdateCarouselAsync(int id, CarouselModelDTO carouselDTO);
+        Task<bool> DeleteCarouselAsync(int id);
     }
+
 }
