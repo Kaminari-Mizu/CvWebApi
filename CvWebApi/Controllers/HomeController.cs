@@ -6,6 +6,8 @@ using Services;
 using Context;
 using AutoMapper;
 using Microsoft.AspNetCore.JsonPatch;
+using System.Linq.Expressions;
+using Microsoft.AspNetCore.JsonPatch.Exceptions;
 
 
 
@@ -50,6 +52,7 @@ namespace CvWebApi.Controllers
                 if (card == null) return NotFound($"Card with ID {id} not found.");
                 return Ok(card);
             }
+            catch (ArgumentException ex) { return BadRequest(new { message = "Invalid Id.", details = ex.Message }); }
             catch (Exception ex) { return StatusCode(500, $"Error when fetching data: {ex.Message}"); }
         }
 
@@ -59,9 +62,11 @@ namespace CvWebApi.Controllers
         {
             try
             {
+                if (cardDTO == null) return BadRequest(new { message = "Card data cannot be null." });
                 var createdCard = await _cardService.CreateCardAsync(cardDTO);
                 return CreatedAtAction(nameof(GetCardById), new { id = createdCard.Id }, createdCard);
             }
+            catch (ArgumentException ex) { return BadRequest(new { message = "Invalid card parameters received.", details = ex.Message }); }
             catch (Exception ex) { return StatusCode(400, $"Input incorrect/Mismatched Parameters/Invalid data type: {ex.Message}"); }
         }
 
@@ -71,28 +76,38 @@ namespace CvWebApi.Controllers
         {
             try
             {
+                if (cardDTO == null) return BadRequest(new { message = "Card data cannot be null." });
+
                 var updatedCard = await _cardService.UpdateCardAsync(id, cardDTO);
                 if (updatedCard == null) return NotFound($"Card with ID {id} not found.");
                 return Ok(updatedCard);
             }
+            catch (ArgumentException ex) { return BadRequest(new { message = "Invalid card parameters received.", details = ex.Message }); }
             catch (Exception ex) { return StatusCode(500, $"Error when updating data: {ex.Message}"); }
         }
 
         [HttpPatch("cards/PatchCard")]
         public async Task<IActionResult> PatchCard(int id, [FromBody] JsonPatchDocument<CardModelDTO> cardDTO)
-        { 
+        {
+            try
+            {
+                if (cardDTO == null) return BadRequest(new { message = "Patch data cannot be null." });
 
-            var updatedCard = await _cardService.PatchCardAsync(id, cardDTO);
-            if (updatedCard == null)
-                return NotFound($"Card with ID {id} not found.");
+                var updatedCard = await _cardService.PatchCardAsync(id, cardDTO);
+                if (updatedCard == null)
+                    return NotFound($"Card with ID {id} not found.");
 
-            return Ok(updatedCard);
+                return Ok(updatedCard);
+            }
+            catch (JsonPatchException ex) { return BadRequest(new { message = "Invalid patch operation.", details = ex.Message }); }
+            catch (ArgumentException ex) { return BadRequest(new { message = "Invalid card parameters received.", details = ex.Message }); }
+            catch (Exception ex) { return StatusCode(500, $"Error when updating data: {ex.Message}"); }
         }
+       
 
 
-
-        // Delete a Card
-        [HttpDelete("cards/{id}")]
+// Delete a Card
+[HttpDelete("cards/{id}")]
         public async Task<IActionResult> DeleteCard(int id)
         {
             try
@@ -101,6 +116,7 @@ namespace CvWebApi.Controllers
                 if (!success) return NotFound($"Card with ID {id} not found.");
                 return NoContent();
             }
+            catch (ArgumentException ex) { return BadRequest(new { message = "Invalid Id.", details = ex.Message }); }
             catch (Exception ex) { return StatusCode(500, $"Error when deleting data: {ex.Message}"); }
         }
 

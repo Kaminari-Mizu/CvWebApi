@@ -68,12 +68,6 @@ namespace Services
             // Apply only the modified properties
             updatedProperties.ApplyTo(cardDTO);
 
-            //Debug.WriteLine($"Title: {cardDTO.Title}");
-            //Debug.WriteLine($"Image: {cardDTO.Image}");
-            //Debug.WriteLine($"Country: {cardDTO.Country}");
-            //Debug.WriteLine($"Description: {cardDTO.Description}");
-            //Debug.WriteLine($"Badges Count: {cardDTO.Badges?.Count}");
-
             cardDTO.Id = existingCard.Id;
 
             _mapper.Map(cardDTO, existingCard);
