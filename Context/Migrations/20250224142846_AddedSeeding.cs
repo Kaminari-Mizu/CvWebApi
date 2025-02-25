@@ -2,10 +2,12 @@
 
 #nullable disable
 
-namespace CvWebApi.Migrations
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
+namespace Context.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class AddedSeeding : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -67,6 +69,32 @@ namespace CvWebApi.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.InsertData(
+                table: "Home",
+                columns: new[] { "Id", "Country", "Description", "Discriminator", "Image", "Title" },
+                values: new object[] { 1, "South Africa", "Graduated CPUT with a Bachelors in Computer Engineering. Part-time sales Assistant at Studio 88 and Outdoor Warehouse. Software Developer Internship at 1Nebula.", "Card", "src/assets/WorkStock.jpg", "Experience Summary" });
+
+            migrationBuilder.InsertData(
+                table: "Home",
+                columns: new[] { "Id", "Discriminator", "Title" },
+                values: new object[] { 2, "Carousel", "HomeImages" });
+
+            migrationBuilder.InsertData(
+                table: "Badges",
+                columns: new[] { "Id", "CardModelId", "Emoji", "Label" },
+                values: new object[,]
+                {
+                    { 1, 1, "🛒", "Part-time Sales Assistant: Studio 88" },
+                    { 2, 1, "🛒", "Part-time Sales Assistant: Outdoor Warehouse" },
+                    { 3, 1, "💻", "Software Developer Internship: 1Nebula" },
+                    { 4, 1, "🎓", "CPUT Graduate in Computer Engineering" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "CarouselImages",
+                columns: new[] { "Id", "CarouselModelId", "ImageUrl" },
+                values: new object[] { 5, 2, "[\"src/assets/profilePic.png\",\"src/assets/gintoki.png\",\"src/assets/roxas.jpg\",\"src/assets/myf.png\",\"src/assets/ffv.jpg\"]" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Badges_CardModelId",

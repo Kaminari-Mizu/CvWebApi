@@ -36,7 +36,10 @@ namespace Context
                 .WithMany(c => c.Images)
                 .HasForeignKey(i => i.CarouselModelId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+           SeedData.Seed(modelBuilder);
         }
+
 
     }
 }
