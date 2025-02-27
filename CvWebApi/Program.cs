@@ -8,29 +8,50 @@ using Context;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container
+/// <summary>
+/// This is the main entry point for the application.
+/// It configures the services and middleware that the application will use.
+/// It also sets up dependency injection, database confiuration, CORS policies, and Swagger.
+/// </summary>
+
+//-----------------------------------
+//Configure Services
+//-----------------------------------
+
+// Add controllers with Newtonsoft.Json support for better JSON serialization
 builder.Services.AddControllers().AddNewtonsoftJson();
 
-builder.Services.AddScoped<ICardRepository, CardRepository>();
-builder.Services.AddScoped<ICardService, CardService>();
+///<summary>
+///Register the services and repositories for dependency injection.
+///This ensures that the services and repositories are available for use throughout the application.
+///</summary>
 
-// Register AutoMapper
-builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
-
-// Register DbContext
-builder.Services.AddDbContext<CvWebContext>(opt =>
-       opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
-);
-
-
-
-// Register Services & Repositories for Dependency Injection
 builder.Services.AddScoped<ICardRepository, CardRepository>();
 builder.Services.AddScoped<ICardService, CardService>();
 builder.Services.AddScoped<ICarouselRepository, CarouselRepository>();
 builder.Services.AddScoped<ICarouselService, CarouselService>();
 
-// Configure CORS
+
+// Register AutoMapper for object mapping
+builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
+
+/// <summary>
+/// Configures the database context for EF Core with SQL Server.
+/// Connection string is retrieved from the appsettings.json file configuration file.
+/// </summary>
+builder.Services.AddDbContext<CvWebContext>(opt =>
+       opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
+);
+
+//-----------------------------------
+// Configure CORS (Cross-Origin Resource Sharing)
+//-----------------------------------
+
+///<summary>
+///Here the CORS policy is set up to allow requests from the React application (Frontend).
+///This is done to ensure that the API can be accessed from the React application/other clients without
+///being blocked by browser security policies.
+///</summary>
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowReactApp", policy =>
@@ -41,25 +62,48 @@ builder.Services.AddCors(options =>
             .AllowAnyMethod();
     });
 });
+//-----------------------------------
+// Configure Swagger for API Documentation
+//-----------------------------------
 
-// Add Swagger/OpenAPI
+///<summary>
+///With this can Add Swagger to the application to provide API documentation.
+///Furthermore, the Swagger UI is added to allow users to interact with the API endpoints
+///for testing purposes.
+///</summary>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSwaggerGenNewtonsoftSupport();
 
 var app = builder.Build();
 
-// Use CORS policy
-app.UseCors("AllowReactApp");
+//-----------------------------------
+// Configure Middleware
+//-----------------------------------
 
-// Configure the HTTP request pipeline
+///<summary>
+///Here CORS policy enabled to allow cross-origin requests
+///This must be called before handling any incoming requests
+///</summary>
+app.UseCors("AllowReactApp");
+///<summary>
+/// Configure the HTTP request pipeline
+///If in development environment, Swagger is enabled
+///</summary>
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
+//Enables HTTPS redirection for security
 app.UseHttpsRedirection();
+
+//Enables Authorisation middleware for secure endpoints
 app.UseAuthorization();
+
+//Maps controller endpoints
 app.MapControllers();
+
+//Runs the application
 app.Run();

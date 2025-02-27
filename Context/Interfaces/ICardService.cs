@@ -4,6 +4,9 @@ using System.Threading.Tasks;
 using Context;
 using Microsoft.AspNetCore.JsonPatch;
 
+///<summary>
+///This class sets up the interfaces for the various methods used within CardServices.
+/// </summary>
 namespace Services
 {
     public interface ICardService

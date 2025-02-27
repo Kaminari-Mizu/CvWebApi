@@ -1,6 +1,8 @@
 ﻿using Context;
 using Microsoft.EntityFrameworkCore;
-
+/// <summary>
+/// This class creates data that would be loaded into the database on creation
+/// </summary>
 public static class SeedData
 {
     public static void Seed(ModelBuilder modelBuilder)

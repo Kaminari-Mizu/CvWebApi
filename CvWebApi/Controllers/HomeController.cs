@@ -13,6 +13,11 @@ using Microsoft.AspNetCore.JsonPatch.Exceptions;
 
 namespace CvWebApi.Controllers
 {
+    /// <summary>
+    /// This class is the controller that provides API endpoints for managing Card and Carousel entities
+    /// as well as their related entities (Badges and CarouselImages respectively).
+    /// It interacts with ICardService and ICarouselService to perform CRUD operations.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class HomeController : ControllerBase
@@ -22,7 +27,12 @@ namespace CvWebApi.Controllers
         private readonly IMapper _mapper;  // Add this line to inject IMapper
 
 
-
+        /// <summary>
+        /// Constructor for HomeController class
+        /// </summary>
+        /// <param name="cardService">Service for managing Card entities</param>
+        /// <param name="carouselService">Service managing Carousel entities</param>
+        /// <param name="mapper">AutoMapper instance for mapping entities to DTOs</param>
         public HomeController(ICardService cardService, ICarouselService carouselService, IMapper mapper)
         {
             _cardService = cardService;
@@ -30,7 +40,12 @@ namespace CvWebApi.Controllers
             _mapper = mapper;
         }
 
-        // Get all Cards
+        //CARD METHODS
+
+        /// <summary>
+        /// Get all Cards
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("cards")]
         public async Task<ActionResult<IEnumerable<CardModelDTO>>> GetCards()
         {
@@ -42,7 +57,11 @@ namespace CvWebApi.Controllers
             catch (Exception ex) { return StatusCode(500, $"Error when fetching data: {ex.Message}"); }
         }
 
-        // Get a Card by ID
+        /// <summary>
+        /// Get a Card by ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("cards/{id}")]
         public async Task<ActionResult<CardModelDTO>> GetCardById(int id)
         {
@@ -56,7 +75,11 @@ namespace CvWebApi.Controllers
             catch (Exception ex) { return StatusCode(500, $"Error when fetching data: {ex.Message}"); }
         }
 
-        // Create a new Card
+        /// <summary>
+        /// Create a new Card
+        /// </summary>
+        /// <param name="cardDTO"></param>
+        /// <returns></returns>
         [HttpPost("cards")]
         public async Task<ActionResult<CardModelDTO>> CreateCard(CardModelDTO cardDTO)
         {
@@ -70,7 +93,12 @@ namespace CvWebApi.Controllers
             catch (Exception ex) { return StatusCode(400, $"Input incorrect/Mismatched Parameters/Invalid data type: {ex.Message}"); }
         }
 
-        // Update an existing Card
+        /// <summary>
+        /// Update an existing Card
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="cardDTO"></param>
+        /// <returns></returns>
         [HttpPut("cards/{id}")]
         public async Task<IActionResult> UpdateCard(int id, CardModelDTO cardDTO)
         {
@@ -86,6 +114,12 @@ namespace CvWebApi.Controllers
             catch (Exception ex) { return StatusCode(500, $"Error when updating data: {ex.Message}"); }
         }
 
+        /// <summary>
+        /// Applies a partial update to a Card using JSON Patch
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="cardDTO"></param>
+        /// <returns></returns>
         [HttpPatch("cards/PatchCard")]
         public async Task<IActionResult> PatchCard(int id, [FromBody] JsonPatchDocument<CardModelDTO> cardDTO)
         {
@@ -106,7 +140,11 @@ namespace CvWebApi.Controllers
        
 
 
-// Delete a Card
+/// <summary>
+/// Delete a Card by ID
+/// </summary>
+/// <param name="id"></param>
+/// <returns></returns>
 [HttpDelete("cards/{id}")]
         public async Task<IActionResult> DeleteCard(int id)
         {
@@ -120,8 +158,13 @@ namespace CvWebApi.Controllers
             catch (Exception ex) { return StatusCode(500, $"Error when deleting data: {ex.Message}"); }
         }
 
-        // Get all Carousels
-        [HttpGet("carousel")]
+        //CAROUSEL METHODS
+
+        /// <summary>
+        /// Get all Carousels
+        /// </summary>
+        /// <returns></returns>
+       [HttpGet("carousel")]
         public async Task<ActionResult<IEnumerable<CarouselModelDTO>>> GetCarousels()
         {
             try
@@ -132,7 +175,11 @@ namespace CvWebApi.Controllers
             catch (Exception ex) { return StatusCode(500, $"Error when fetching data: {ex.Message}"); }
         }
 
-        // Get a Carousel by ID
+        /// <summary>
+        /// Get a Carousel by ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("carousel/{id}")]
         public async Task<ActionResult<CarouselModelDTO>> GetCarouselById(int id)
         {
@@ -145,7 +192,11 @@ namespace CvWebApi.Controllers
             catch (Exception ex) { return StatusCode(500, $"Error when fetching data: {ex.Message}"); }
         }
 
-        // Create a new Carousel
+        /// <summary>
+        /// Create a new Carousel
+        /// </summary>
+        /// <param name="carouselDTO"></param>
+        /// <returns></returns>
         [HttpPost("carousel")]
         public async Task<ActionResult<CarouselModelDTO>> CreateCarousel(CarouselModelDTO carouselDTO)
         {
@@ -157,7 +208,12 @@ namespace CvWebApi.Controllers
             catch (Exception ex) { return StatusCode(400, $"Input incorrect/Mismatched Parameters/Invalid data type: {ex.Message}"); }
         }
 
-        // Update an existing Carousel
+        /// <summary>
+        /// Update an existing Carousel
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="carouselDTO"></param>
+        /// <returns></returns>
         [HttpPut("carousel/{id}")]
         public async Task<IActionResult> UpdateCarousel(int id, CarouselModelDTO carouselDTO)
         {
@@ -170,7 +226,11 @@ namespace CvWebApi.Controllers
             catch (Exception ex) { return StatusCode(500, $"Error when updating data: {ex.Message}"); }
         }
 
-        // Delete a Carousel
+        /// <summary>
+        /// Delete a Carousel
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpDelete("carousel/{id}")]
         public async Task<IActionResult> DeleteCarousel(int id)
         {

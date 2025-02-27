@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Context;
 
+///<summary>
+///This class sets up the interfaces for the various methods used within CarouselRepository.
+/// </summary>
 namespace Integration
 {
     public interface ICarouselRepository

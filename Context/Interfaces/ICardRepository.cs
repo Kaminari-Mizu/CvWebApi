@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Context;
 
-
+///<summary>
+///This class sets up the interfaces for the various methods used within CardRepository.
+/// </summary>
 namespace Integration
 {
     public interface ICardRepository
