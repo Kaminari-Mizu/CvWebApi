@@ -23,6 +23,7 @@ namespace Context
     public abstract class HomeModel
     {
         [Key] //This tells EF Core that the below ID is a primary key and is what will be updated and used to keep track of each entry into a table
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public string Title { get; set; } = null!;
     }
@@ -30,14 +31,18 @@ namespace Context
     // Table 1: Card Model (inherits from HomeModel)
     public class CardModel : HomeModel
     {
+        [Required]
         public string Image { get; set; }
+        [Required]
         public string Country { get; set; }
+        [Required]
         public string Description { get; set; }
 
         //The following line established a One-To-Many relationship between CardModel and BadgeModel
         //This means that each CardModel can have multiple BadgeModels associated with it
         //and subsequently BadgeModel will have a Foreign Key (the CardModel Id) referencing the CardModel it
         //is associated with
+        [Required]
         public ICollection<BadgeModel> Badges { get; set; } = new List<BadgeModel>();
     }
 
@@ -45,6 +50,7 @@ namespace Context
     public class CarouselModel : HomeModel
     {
         //Same as BadgeModel and CardModel
+        [Required]
         public ICollection<CarouselImageModel> Images { get; set; } = new List<CarouselImageModel>();
     }
 
@@ -53,10 +59,13 @@ namespace Context
     {
         [Key]
         public int Id { get; set; }
+        [Required]
         public List<string> ImageUrl { get; set; } = new List<string>();
 
         // Foreign key to CarouselModel
+        [Required]
         public int CarouselModelId { get; set; }
+        [Required]
         public CarouselModel? Carousel { get; set; }
     }
 
@@ -65,10 +74,13 @@ namespace Context
     {
         [Key]
         public int Id { get; set; }
+        [Required]
         public string Emoji { get; set; }
+        [Required]
         public string Label { get; set; }
 
         // Foreign Key to CardModel
+        [Required]
         public int CardModelId { get; set; }
         public CardModel? Card { get; set; }
     }

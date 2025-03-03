@@ -81,7 +81,7 @@ namespace CvWebApi.Controllers
         /// <param name="cardDTO"></param>
         /// <returns></returns>
         [HttpPost("cards")]
-        public async Task<ActionResult<CardModelDTO>> CreateCard(CardModelDTO cardDTO)
+        public async Task<ActionResult<CardModelDTO>> CreateCard([FromBody] CardModelDTO cardDTO)
         {
             try
             {
@@ -99,8 +99,8 @@ namespace CvWebApi.Controllers
         /// <param name="id"></param>
         /// <param name="cardDTO"></param>
         /// <returns></returns>
-        [HttpPut("cards/{id}")]
-        public async Task<IActionResult> UpdateCard(int id, CardModelDTO cardDTO)
+        [HttpPut("cards/Update")]
+        public async Task<IActionResult> UpdateCard(int id,[FromBody] CardModelDTO cardDTO)
         {
             try
             {

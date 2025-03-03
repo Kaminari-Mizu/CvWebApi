@@ -83,6 +83,8 @@ namespace Integration
 
                 await _context.Cards.AddAsync(card);
                 await _context.SaveChangesAsync();
+                Console.WriteLine($"Card Saved! New ID: {card.Id}"); // Debugging log
+
                 await transaction.CommitAsync();
                 return card;
             }

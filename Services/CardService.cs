@@ -50,6 +50,7 @@ namespace Services
         public async Task<CardModelDTO> CreateCardAsync(CardModelDTO cardDTO)
         {
             var card = _mapper.Map<CardModel>(cardDTO);
+            card.Id = 0; // Ensure the ID is set to 0 to avoid conflicts
             var createdCard = await _cardRepository.AddCardAsync(card);
             return _mapper.Map<CardModelDTO>(createdCard);
         }
@@ -77,6 +78,7 @@ namespace Services
             if (existingCard == null) return null;
 
             _mapper.Map(cardDTO, existingCard);
+            //existingCard.Id = id;
 
             var updatedCard = await _cardRepository.UpdateCardAsync(existingCard); // Now correctly returns a CardModel
             return _mapper.Map<CardModelDTO>(updatedCard);

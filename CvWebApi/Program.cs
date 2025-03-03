@@ -13,7 +13,6 @@ var builder = WebApplication.CreateBuilder(args);
 /// It configures the services and middleware that the application will use.
 /// It also sets up dependency injection, database confiuration, CORS policies, and Swagger.
 /// </summary>
-
 //-----------------------------------
 //Configure Services
 //-----------------------------------

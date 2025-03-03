@@ -54,6 +54,10 @@ namespace Context
                 .HasValue<CardModel>("Card")
                 .HasValue<CarouselModel>("Carousel");
 
+            modelBuilder.Entity<HomeModel>()
+            .Property(h => h.Id)
+            .ValueGeneratedOnAdd();  // <-- Explicitly tell EF to auto-generate ID
+
 
             /// <summary>
             /// Configures a one-to-many relationship between CardModel and BadgeModel.
