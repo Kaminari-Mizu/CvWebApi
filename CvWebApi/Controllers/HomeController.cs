@@ -86,8 +86,8 @@ namespace CvWebApi.Controllers
             try
             {
                 if (cardDTO == null) return BadRequest(new { message = "Card data cannot be null." });
-                var createdCard = await _cardService.CreateCardAsync(cardDTO);
-                return CreatedAtAction(nameof(GetCardById), new { id = createdCard.Id }, createdCard);
+                var (createdCard, cardId) = await _cardService.CreateCardAsync(cardDTO);
+                return CreatedAtAction(nameof(GetCardById), new { id = cardId }, createdCard);
             }
             catch (ArgumentException ex) { return BadRequest(new { message = "Invalid card parameters received.", details = ex.Message }); }
             catch (Exception ex) { return StatusCode(400, $"Input incorrect/Mismatched Parameters/Invalid data type: {ex.Message}"); }

@@ -38,9 +38,18 @@ builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
 /// Configures the database context for EF Core with SQL Server.
 /// Connection string is retrieved from the appsettings.json file configuration file.
 /// </summary>
-builder.Services.AddDbContext<CvWebContext>(opt =>
-       opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
-);
+var environment = builder.Environment.EnvironmentName;
+
+if (environment == "Test")  // For testing environment, use InMemory
+{
+    builder.Services.AddDbContext<CvWebContext>(opt =>
+        opt.UseInMemoryDatabase("TestDatabase"));
+}
+else  // For other environments (e.g., Development, Production), use SQL Server
+{
+    builder.Services.AddDbContext<CvWebContext>(opt =>
+        opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+}
 
 //-----------------------------------
 // Configure CORS (Cross-Origin Resource Sharing)

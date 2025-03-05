@@ -47,12 +47,11 @@ namespace Services
         /// </summary>
         /// <param name="cardDTO">The DTO containing the card details</param>
         /// <returns>The newly created CardModelDTO object</returns>
-        public async Task<CardModelDTO> CreateCardAsync(CardModelDTO cardDTO)
+        public async Task<(CardModelDTO DTO, int Id)> CreateCardAsync(CardModelDTO cardDTO)
         {
             var card = _mapper.Map<CardModel>(cardDTO);
-            card.Id = 0; // Ensure the ID is set to 0 to avoid conflicts
             var createdCard = await _cardRepository.AddCardAsync(card);
-            return _mapper.Map<CardModelDTO>(createdCard);
+            return (_mapper.Map<CardModelDTO>(createdCard), createdCard.Id);
         }
 
         /// <summary>
@@ -112,7 +111,7 @@ namespace Services
             updatedProperties.ApplyTo(cardDTO);
 
             //Preserve the original ID after patching
-            cardDTO.Id = existingCard.Id;
+           // cardDTO.Id = existingCard.Id;
 
             // Map the DTO back to the CardModel (original entity)
             _mapper.Map(cardDTO, existingCard);

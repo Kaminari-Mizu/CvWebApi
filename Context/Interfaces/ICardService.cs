@@ -12,7 +12,7 @@ namespace Services
     public interface ICardService
     {
         Task<IEnumerable<CardModelDTO>> GetCardsAsync();
-        Task<CardModelDTO> CreateCardAsync(CardModelDTO cardDTO);
+        Task<(CardModelDTO DTO, int Id)> CreateCardAsync(CardModelDTO cardDTO);
         Task<CardModelDTO?> GetCardByIdAsync(int id);
         Task<CardModelDTO?> UpdateCardAsync(int id, CardModelDTO cardDTO);
         Task<CardModelDTO?> PatchCardAsync(int id, JsonPatchDocument<CardModelDTO> updateProperties);

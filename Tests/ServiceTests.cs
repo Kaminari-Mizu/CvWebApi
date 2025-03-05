@@ -13,7 +13,9 @@ using Microsoft.AspNetCore.JsonPatch;
 namespace Tests
 {
     /// <summary>
-    /// Unit tests for the CardService class.
+    /// Unit tests for the CardService class. These tests are focused on isolating the 
+    /// CardService methods and verifying that they correctly interact with the CardRepository.
+    /// These tests also use mocks to simulate dependencies like the repository and mapper
     /// </summary>
     [TestFixture]
     public class CardServiceTests
@@ -23,7 +25,8 @@ namespace Tests
         private CardService _cardService;
 
         /// <summary>
-        /// Initializes the test setup before each test case.
+        /// Initializes the test setup before each test case by initializing mocks and the
+        /// CardService instance.
         /// </summary>
         [SetUp]
         public void SetUp()
@@ -34,44 +37,46 @@ namespace Tests
         }
 
         /// <summary>
-        /// Tests if GetCardsAsync correctly returns mapped CardModelDTOs.
+        /// Tests if GetCardsAsync correctly retrieves all cards from the repository and then maps
+        /// them to the DTOs.
         /// </summary>
         [Test]
         public async Task GetCardsAsync_ShouldReturnMappedCardDTOs()
         {
-            // Arrange
+            // Arrange: Set up mock behaviour for repository and mapper
             var cards = new List<CardModel> { new CardModel { Id = 1, Image = "Test Card" } };
-            var cardDTOs = new List<CardModelDTO> { new CardModelDTO { Id = 1, Image = "Test Card" } };
+            var cardDTOs = new List<CardModelDTO> { new CardModelDTO { Image = "Test Card" } };
 
             _cardRepositoryMock.Setup(repo => repo.GetAllCardsAsync()).ReturnsAsync(cards);
             _mapperMock.Setup(m => m.Map<IEnumerable<CardModelDTO>>(cards)).Returns(cardDTOs);
 
-            // Act
+            // Act: Call the service method
             var result = await _cardService.GetCardsAsync();
 
-            // Assert
+            // Assert: Verify the result matches the expected DTOs
             result.Should().BeEquivalentTo(cardDTOs);
         }
 
         /// <summary>
-        /// Tests if CreateCardAsync correctly returns the mapped CardModelDTO.
+        /// Tests if CreateCardAsync adds a new card and returns its DTP with an assigned ID.
         /// </summary>
         [Test]
         public async Task CreateCardAsync_ShouldReturnMappedCardDTO()
         {
-            // Arrange
-            var cardDTO = new CardModelDTO { Id = 1, Image = "New Card" };
+            // Arrange: Define input DTO and expected entity behaviour
+            var cardDTO = new CardModelDTO { Image = "New Card" };
             var card = new CardModel { Id = 1, Image = "New Card" };
 
             _mapperMock.Setup(m => m.Map<CardModel>(cardDTO)).Returns(card);
             _cardRepositoryMock.Setup(repo => repo.AddCardAsync(card)).ReturnsAsync(card);
             _mapperMock.Setup(m => m.Map<CardModelDTO>(card)).Returns(cardDTO);
 
-            // Act
-            var result = await _cardService.CreateCardAsync(cardDTO);
+            // Act: Call the service method
+            var (resultDTO, resultId) = await _cardService.CreateCardAsync(cardDTO);
 
-            // Assert
-            result.Should().BeEquivalentTo(cardDTO);
+            // Assert: Check the returned DTO and ID
+            resultDTO.Should().BeEquivalentTo(cardDTO);
+            resultId.Should().Be(1); // Optional: Verify the ID as well
         }
 
         /// <summary>
@@ -80,17 +85,17 @@ namespace Tests
         [Test]
         public async Task GetCardByIdAsync_CardExists_ShouldReturnMappedCardDTO()
         {
-            // Arrange
+            // Arrange: Mock a card retrieval and mapping
             var card = new CardModel { Id = 1, Image = "Test Card" };
-            var cardDTO = new CardModelDTO { Id = 1, Image = "Test Card" };
+            var cardDTO = new CardModelDTO { Image = "Test Card" };
 
             _cardRepositoryMock.Setup(repo => repo.GetCardByIdAsync(1)).ReturnsAsync(card);
             _mapperMock.Setup(m => m.Map<CardModelDTO>(card)).Returns(cardDTO);
 
-            // Act
+            // Act: Fetch the mocked card
             var result = await _cardService.GetCardByIdAsync(1);
 
-            // Assert
+            // Assert: Ensure the DTO matches expectations
             result.Should().BeEquivalentTo(cardDTO);
         }
 
@@ -100,13 +105,13 @@ namespace Tests
         [Test]
         public async Task GetCardByIdAsync_CardDoesNotExist_ShouldReturnNull()
         {
-            // Arrange
+            // Arrange: Mock a non-existent card
             _cardRepositoryMock.Setup(repo => repo.GetCardByIdAsync(1)).ReturnsAsync((CardModel)null);
 
-            // Act
+            // Act: Fetch the card
             var result = await _cardService.GetCardByIdAsync(1);
 
-            // Assert
+            // Assert: Ensure null is returned
             result.Should().BeNull();
         }
 
@@ -116,15 +121,15 @@ namespace Tests
         [Test]
         public async Task DeleteCardAsync_CardExists_ShouldReturnTrue()
         {
-            // Arrange
+            // Arrange: Mock card existence and deletion
             var card = new CardModel { Id = 1, Image = "Test Card" };
             _cardRepositoryMock.Setup(repo => repo.GetCardByIdAsync(1)).ReturnsAsync(card);
             _cardRepositoryMock.Setup(repo => repo.DeleteCardAsync(1)).Returns(Task.CompletedTask);
 
-            // Act
+            // Act: Delete the card
             var result = await _cardService.DeleteCardAsync(1);
 
-            // Assert
+            // Assert: Check for successful deletion
             result.Should().BeTrue();
         }
 
@@ -134,47 +139,48 @@ namespace Tests
         [Test]
         public async Task DeleteCardAsync_CardDoesNotExist_ShouldReturnFalse()
         {
-            // Arrange
+            // Arrange: Mock a non-existent card
             _cardRepositoryMock.Setup(repo => repo.GetCardByIdAsync(1)).ReturnsAsync((CardModel)null);
 
-            // Act
+            // Act: Attempt to delete the card
             var result = await _cardService.DeleteCardAsync(1);
 
-            // Assert
+            // Assert: Ensure failure is indicated
             result.Should().BeFalse();
         }
 
         /// <summary>
-        /// Tests if UpdateCardAsync returns the updated CardModelDTO when a card exists.
+        /// Tests if UpdateCardAsync updates an existing card and then returns its updated
+        /// CardModelDTO.
         /// </summary>
         [Test]
         public async Task UpdateCardAsync_CardExists_ShouldReturnUpdatedCardDTO()
         {
-            // Arrange
+            // Arrange: Mock card update process
             var existingCard = new CardModel { Id = 1, Image = "Old Name" };
-            var updatedCardDTO = new CardModelDTO { Id = 1, Image = "New Name" };
+            var updatedCardDTO = new CardModelDTO { Image = "New Name" };
 
             _cardRepositoryMock.Setup(repo => repo.GetCardByIdAsync(1)).ReturnsAsync(existingCard);
             _mapperMock.Setup(m => m.Map(updatedCardDTO, existingCard));
             _cardRepositoryMock.Setup(repo => repo.UpdateCardAsync(existingCard)).ReturnsAsync(existingCard);
             _mapperMock.Setup(m => m.Map<CardModelDTO>(existingCard)).Returns(updatedCardDTO);
 
-            // Act
+            // Act: Update the card
             var result = await _cardService.UpdateCardAsync(1, updatedCardDTO);
 
-            // Assert
+            // Assert: Verify the updated DTO
             result.Should().BeEquivalentTo(updatedCardDTO);
         }
 
         /// <summary>
-        /// Tests if PatchCardAsync returns the patched CardModelDTO when a card exists.
+        /// Tests if PatchCardAsync applies a patch (partial update) to an existing card returns its updated DTO.
         /// </summary>
         [Test]
         public async Task PatchCardAsync_CardExists_ShouldReturnPatchedCardDTO()
         {
-            // Arrange
+            // Arrange: Mock patch operation
             var existingCard = new CardModel { Id = 1, Image = "Old Name" };
-            var cardDTO = new CardModelDTO { Id = 1, Image = "Patched Name" };
+            var cardDTO = new CardModelDTO { Image = "Patched Name" };
             var patchDoc = new JsonPatchDocument<CardModelDTO>();
             patchDoc.Replace(c => c.Image, "Patched Name");
 
@@ -184,10 +190,10 @@ namespace Tests
             _cardRepositoryMock.Setup(repo => repo.PatchCardAsync(existingCard)).ReturnsAsync(existingCard);
             _mapperMock.Setup(m => m.Map<CardModelDTO>(existingCard)).Returns(cardDTO);
 
-            // Act
+            // Act: Apply the patch
             var result = await _cardService.PatchCardAsync(1, patchDoc);
 
-            // Assert
+            // Assert: Verify the patched DTO
             result.Should().BeEquivalentTo(cardDTO);
         }
     }
