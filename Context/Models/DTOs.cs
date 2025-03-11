@@ -13,7 +13,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 ///This is why the DTOs are used to map the entities to the client-side and vice versa. This mapping can be achieved
 ///with an AutoMapper which is setup in a different folder in the project.
 /// </summary>
-namespace Context
+namespace Domain
 {
     public class CardModelDTO
     {

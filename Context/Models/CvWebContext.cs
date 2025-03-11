@@ -11,7 +11,7 @@
 /// defined in the DbContext class. It serves as a bridge between the database and the application,
 /// allowing EF Core to track and manage entities.
 /// </summary>
-namespace Context
+namespace Domain
 {
     public class CvWebContext : DbContext
     {

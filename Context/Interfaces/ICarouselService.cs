@@ -1,12 +1,12 @@
 ﻿using CvWebApi.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Context;
+using Domain;
 
 ///<summary>
 ///This class sets up the interfaces for the various methods used within CarouselServices.
 ///</summary>
-namespace Services
+namespace Domain
 {
     public interface ICarouselService
     {

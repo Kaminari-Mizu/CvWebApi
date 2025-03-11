@@ -4,7 +4,7 @@ using AutoMapper;
 using Microsoft.Extensions.Options;
 using Integration;
 using Services;
-using Context;
+using Domain;
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -2,7 +2,7 @@
 using CvWebApi.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Context;
+using Domain;
 using Integration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.JsonPatch;

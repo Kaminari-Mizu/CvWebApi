@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Context;
+using Domain;
 
 namespace CvWebApi.CoreLogic
 {

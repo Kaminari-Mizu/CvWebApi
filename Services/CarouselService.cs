@@ -3,7 +3,7 @@ using CvWebApi.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Integration;
-using Context;
+using Domain;
 namespace Services
 {
     public class CarouselService : ICarouselService

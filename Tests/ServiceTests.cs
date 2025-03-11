@@ -1,12 +1,9 @@
 ﻿using NUnit.Framework;
 using Moq;
 using FluentAssertions;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Services;
 using Integration;
-using Context;
-using CvWebApi.Models;
+using Domain;
 using AutoMapper;
 using Microsoft.AspNetCore.JsonPatch;
 

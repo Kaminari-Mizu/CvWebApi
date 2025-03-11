@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Context\Context.csproj" />
+    <ProjectReference Include="..\Context\Domain.csproj" />
     <ProjectReference Include="..\CvWebApi\CvWebApi.csproj" />
     <ProjectReference Include="..\Integration\Integration.csproj" />
     <ProjectReference Include="..\Services\Services.csproj" />

@@ -1,4 +1,4 @@
-﻿using Context;
+﻿using Domain;
 using Microsoft.EntityFrameworkCore;
 /// <summary>
 /// This class creates data that would be loaded into the database on creation

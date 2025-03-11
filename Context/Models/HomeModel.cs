@@ -9,7 +9,7 @@ using System.Text.Json.Serialization;
 ///that EF Core uses, when applying migrations, to create and manage the tables. Then
 ///each property of the entities will represent a column in the table
 ///</summary>
-namespace Context
+namespace Domain
 {
     /// <summary>
     /// The HomeModel (HomeEntity) is an abstract class which means that it's
@@ -32,11 +32,11 @@ namespace Context
     public class CardModel : HomeModel
     {
         [Required]
-        public string Image { get; set; }
+        public string Image { get; set; } = null!;
         [Required]
-        public string Country { get; set; }
+        public string Country { get; set; } = null!;
         [Required]
-        public string Description { get; set; }
+        public string Description { get; set; } = null!;
 
         //The following line established a One-To-Many relationship between CardModel and BadgeModel
         //This means that each CardModel can have multiple BadgeModels associated with it
@@ -75,7 +75,7 @@ namespace Context
         [Key]
         public int Id { get; set; }
         [Required]
-        public string Emoji { get; set; }
+        public string Emoji { get; set; } = null!;
         [Required]
         public string Label { get; set; }
 

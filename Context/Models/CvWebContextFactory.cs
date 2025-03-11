@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
 using System.IO;
 
-namespace Context.Models
+namespace Domain.Models
 {
     /// <summary>
     /// This Factory class is setup so that an instance of CvWebContext will be created at design time.

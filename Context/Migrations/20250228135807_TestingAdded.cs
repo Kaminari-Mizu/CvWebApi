@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace Context.Migrations
+namespace Domain.Migrations
 {
     /// <inheritdoc />
     public partial class TestingAdded : Migration
