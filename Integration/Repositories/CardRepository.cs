@@ -17,6 +17,7 @@ namespace Integration
         private readonly CvWebContext _context;
         /// <summary>
         /// Initializes a new instance of the CardRepository class.
+        /// hhk
         /// Injects the EF Core DbContext instance into the repository to enable database interaction.
         /// </summary>
         /// <param name="context"> Is the EF Core DbContext instance for accessing the CardModel entity</param> 
